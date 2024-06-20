@@ -16,6 +16,11 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    avatar: {
+      type: String,
+      default:
+        "https://commons.wikimedia.org/wiki/File:Default_avatar_profile.jpg",
+    },
   },
   { timestamps: true }
 );
