@@ -27,47 +27,62 @@ export const deleteListing = async (req, res, next) => {
 };
 
 // export const updateListing = async (req, res, next) => {
-//   const listing = await Listing.findById(req.params.id);
-//   if (!listing) {
-//     return next(errorHandler(404, "Listing not found"));
-//   }
-//   if (req.user.id !== listing.userRef) {
-//     return next(errorHandler(401, "You can only delete your own listing"));
-//   }
 //   try {
-//     const updatedListing = Listing.findByIdAndUpdate(req.params.id, req.body, {
-//       new: true,
-//     });
-//     res.status(200).json(updatedListing);
+//     const listing = await Listing.findById(req.params.id);
+//     if (!listing) {
+//       return next(errorHandler(404, "Listing not found"));
+//     }
+//     if (req.user.id !== listing.userRef.toString()) {
+//       return next(errorHandler(401, "You can only update your own listing"));
+//     }
+
+//     const updatedListing = await Listing.findByIdAndUpdate(
+//       req.params.id,
+//       req.body,
+//       {
+//         new: true,
+//         runValidators: true, // Ensures that validations are run on the updated data
+//       }
+//     );
+
+//     if (!updatedListing) {
+//       return next(errorHandler(404, "Listing not found after update"));
+//     }
+
+//     res.status(200).json({ success: true, data: updatedListing });
 //   } catch (error) {
 //     next(error);
 //   }
 // };
 
 export const updateListing = async (req, res, next) => {
-  try {
-    const listing = await Listing.findById(req.params.id);
-    if (!listing) {
-      return next(errorHandler(404, "Listing not found"));
-    }
-    if (req.user.id !== listing.userRef.toString()) {
-      return next(errorHandler(401, "You can only update your own listing"));
-    }
+  const listing = await Listing.findById(req.params.id);
+  if (!listing) {
+    return next(errorHandler(404, "Listing not found!"));
+  }
+  if (req.user.id !== listing.userRef) {
+    return next(errorHandler(401, "You can only update your own listings!"));
+  }
 
+  try {
     const updatedListing = await Listing.findByIdAndUpdate(
       req.params.id,
       req.body,
-      {
-        new: true,
-        runValidators: true, // Ensures that validations are run on the updated data
-      }
+      { new: true }
     );
+    res.status(200).json(updatedListing);
+  } catch (error) {
+    next(error);
+  }
+};
 
-    if (!updatedListing) {
-      return next(errorHandler(404, "Listing not found after update"));
+export const getListing = async (req, res, next) => {
+  try {
+    const listing = await Listing.findById(req.params.id);
+    if (!listing) {
+      return next(errorHandler(404, "Listing not found!"));
     }
-
-    res.status(200).json({ success: true, data: updatedListing });
+    res.status(200).json(listing);
   } catch (error) {
     next(error);
   }
